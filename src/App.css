@@ -7,17 +7,19 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
 }
 
 .app-container {
-  width: 90%;
-  max-width: 1200px;
+  width: 95%; 
+  max-width: 1400px; 
   margin: 0 auto;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
 }
+
 
 .app-title {
   text-align: center;
