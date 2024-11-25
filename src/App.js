@@ -9,14 +9,19 @@ function App() {
   const [insights, setInsights] = useState([]);
   const [previousLinks, setPreviousLinks] = useState([]);
   const [error, setError] = useState(""); 
+  const [loading, setLoading] = useState(true);
+
 
   const fetchInsights = async () => {
+
     const response = await axios.get(`${baseUrl}/api/insights`);
     setInsights(response.data);
 console.log(response.data,'response.data');
 
     const links = response.data.map((insight) => insight?.url);
     setPreviousLinks(links);
+    setLoading(false);
+
   };
 
   useEffect(() => {
@@ -93,6 +98,7 @@ console.log(response.data,'response.data');
             </tr>
           </thead>
           <tbody>
+            {loading?<>Loading</>:<>
             {insights.map((insight,index) => (
               <tr key={insight._id}>
                 <td>{insight?.url}</td>
@@ -154,6 +160,7 @@ console.log(response.data,'response.data');
                 </td>
               </tr>
             ))}
+            </>}
           </tbody>
         </table>
       </div>
