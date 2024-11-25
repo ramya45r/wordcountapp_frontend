@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css"; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const baseUrl = process.env.REACT_APP_BASEURL;
 
@@ -10,6 +12,7 @@ function App() {
   const [previousLinks, setPreviousLinks] = useState([]);
   const [error, setError] = useState(""); 
   const [loading, setLoading] = useState(true);
+  const [loader, setloader] = useState(true);
 
 
   const fetchInsights = async () => {
@@ -50,12 +53,20 @@ console.log(response.data,'response.data');
       return;
     }
     setError("");
+    setloader(true);
+    try{
 
-    const response = await axios.post(`${baseUrl}/api/insights`, { url });
-    setInsights([response.data, ...insights]);
-    setUrl("");
-
-    setPreviousLinks([response.data.url, ...previousLinks]);
+      const response = await axios.post(`${baseUrl}/api/insights`, { url });
+      setInsights([response.data, ...insights]);
+      setUrl("");
+  
+      setPreviousLinks([response.data.url, ...previousLinks]);
+      toast.success("URL submitted successfully!");
+    }  catch (error) {
+      toast.error("Failed to submit URL. Please try again.");
+    } finally {
+      setloader(false);
+    }
   };
 
   const handleRemove = async (id) => {
@@ -70,6 +81,7 @@ console.log(response.data,'response.data');
 
   return (
     <div className="app-container">
+       <ToastContainer position="top-right" autoClose={3000} />
       <h1 className="app-title">Word Count App</h1>
       <form className="form" onSubmit={handleSubmit}>
         <input
@@ -79,9 +91,10 @@ console.log(response.data,'response.data');
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
-        <button type="submit" className="submit-button">
-          Check Word Count
-        </button>
+     <button type="submit" className="submit-button" disabled={loading}>
+  {loader ? "Submitting..." : "Check Word Count"}
+</button>
+
         {error && <p className="error-message">{error}</p>}
       </form>
 
