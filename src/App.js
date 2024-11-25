@@ -12,7 +12,7 @@ function App() {
   const [previousLinks, setPreviousLinks] = useState([]);
   const [error, setError] = useState(""); 
   const [loading, setLoading] = useState(true);
-  const [loader, setloader] = useState(true);
+  const [loader, setloader] = useState(false);
 
 
   const fetchInsights = async () => {
@@ -54,6 +54,7 @@ console.log(response.data,'response.data');
     }
     setError("");
     setloader(true);
+
     try{
 
       const response = await axios.post(`${baseUrl}/api/insights`, { url });
@@ -62,20 +63,21 @@ console.log(response.data,'response.data');
   
       setPreviousLinks([response.data.url, ...previousLinks]);
       toast.success("URL submitted successfully!");
+      setloader(false);
     }  catch (error) {
       toast.error("Failed to submit URL. Please try again.");
-    } finally {
-      setloader(false);
-    }
+    } 
   };
 
   const handleRemove = async (id) => {
     await axios.delete(`${baseUrl}/api/insights/${id}`);
+    toast.success("Insight removed successfully!");
     fetchInsights();
   };
 
   const handleFavorite = async (id, isFavorite) => {
     await axios.put(`${baseUrl}/api/insights/${id}/favorite`, { isFavorite: !isFavorite });
+    toast.success("Status updated successfully");
     fetchInsights();
   };
 
@@ -91,7 +93,7 @@ console.log(response.data,'response.data');
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
-     <button type="submit" className="submit-button" disabled={loading}>
+     <button type="submit" className="submit-button" disabled={loader}>
   {loader ? "Submitting..." : "Check Word Count"}
 </button>
 
@@ -116,7 +118,8 @@ console.log(response.data,'response.data');
               <tr key={insight._id}>
                 <td>{insight?.url}</td>
                 <td>{insight?.wordCount}</td>
-                <td>{insight?.isFavorite ? "true" : "false"}</td>
+                <td>{insight?.isFavorite ? 
+                "true" : "false"}</td>
                 <td>
                   <ul>
                   <td>
@@ -158,19 +161,21 @@ console.log(response.data,'response.data');
                   </ul>
                 </td>
                 <td>
-                  <button
-                    className="favorite-button"
-                    onClick={() => handleFavorite(insight._id, insight.isFavorite)}
-                  >
-                    {insight?.isFavorite ? "Unfavorite" : "Favorite"}
-                  </button>
-                  <button
-                    className="remove-button"
-                    onClick={() => handleRemove(insight._id)}
-                  >
-                    Remove
-                  </button>
-                </td>
+  <button
+    className={`favorite-button ${insight?.isFavorite ? "unfavorite" : "favorite"}`}
+    onClick={() => handleFavorite(insight._id, insight.isFavorite)}
+  >
+    {insight?.isFavorite ? "Unfavorite" : "Favorite"}
+  </button>
+  <br/>
+  <button
+    className="remove-button"
+    onClick={() => handleRemove(insight._id)}
+  >
+    Remove
+  </button>
+</td>
+
               </tr>
             ))}
             </>}

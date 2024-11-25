@@ -19,6 +19,32 @@ body {
   border-radius: 8px;
   overflow: hidden;
 }
+.favorite-button {
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.favorite-button.favorite {
+  background-color: #4caf50; 
+}
+
+.favorite-button.unfavorite {
+  background-color: #ff4c4c; 
+}
+
+.remove-button {
+  background-color: #ff4c4c; 
+  color: #fff;
+  border: none;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
 
 
 .app-title {
